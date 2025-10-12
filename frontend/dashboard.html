@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    h1 { color: #333; }
+    #logoutBtn {
+      background-color: #ff4b5c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    #logoutBtn:hover { background-color: #e8434f; }
+  </style>
+</head>
+<body>
+  <h1>Welcome to Dashboard</h1>
+  <p>You are logged in!</p>
+
+
+  <script>
+  // Check if user is logged in
+  if (!localStorage.getItem('loggedIn')) {
+    // If not logged in, redirect to login
+    window.location.href = 'login.html';
+  }
+
+  // Logout button click event
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    localStorage.removeItem('loggedIn'); // Remove login flag
+    window.location.href = 'login.html'; // Redirect to login page
+  });
+</script>
+</body>
+</html>
