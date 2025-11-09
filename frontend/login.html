@@ -44,6 +44,12 @@
         font-size: 1rem;
     }
     .login-card button:hover { background: #2980b9; }
+
+    .error-msg {
+        color: red;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
 </style>
 </head>
 <body>
@@ -53,23 +59,45 @@
     <input type="text" id="username" placeholder="Username">
     <input type="password" id="password" placeholder="Password">
     <button onclick="login()">Login</button>
+    <p class="error-msg" id="error-msg"></p>
 </div>
 
 <script>
-function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+const API_URL = 'http://localhost:3000';
 
-    if(username && password) {
-        // store login flag
-        localStorage.setItem("loggedIn", "true");
-        alert("Login successful!");
-        window.location.href = "dashboard.html"; 
-    } else {
-        alert("Please enter username and password.");
+async function login() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorMsg = document.getElementById('error-msg');
+
+    errorMsg.innerText = '';
+
+    if (!username || !password) {
+        errorMsg.innerText = 'Please enter username and password.';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            localStorage.setItem('loggedIn', 'true');
+            localStorage.setItem('username', username);
+            window.location.href = 'dashboard.html';
+        } else {
+            errorMsg.innerText = data.error || 'Login failed. Try again.';
+        }
+    } catch (err) {
+        console.error(err);
+        errorMsg.innerText = 'Server error. Please try again later.';
     }
 }
-
 </script>
 
 </body>

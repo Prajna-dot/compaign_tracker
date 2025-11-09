@@ -1,6 +1,6 @@
 const API_URL = 'http://localhost:3000';
 
-// DOM Elements
+// -------------------- DOM Elements --------------------
 const loginCard = document.getElementById('login-card');
 const dashboard = document.getElementById('dashboard');
 const loginBtn = document.getElementById('login-btn');
@@ -12,73 +12,78 @@ const tableBody = document.getElementById('campaigns-table');
 const searchInput = document.getElementById('search-input');
 
 let campaigns = [];
-let isSignup = false;
+let isSignup = formTitle ? formTitle.innerText.toLowerCase().includes('sign up') : false;
 
-// ---------- Toggle Login / Signup ----------
-toggleLink.addEventListener('click', () => {
-  isSignup = !isSignup;
-  updateFormMode();
-});
+// -------------------- Toggle Login / Signup --------------------
+if (toggleLink) {
+  toggleLink.addEventListener('click', () => {
+    isSignup = !isSignup;
+    updateFormMode();
+  });
+}
 
 function updateFormMode() {
+  if (!formTitle) return;
   formTitle.innerText = isSignup ? 'Sign Up' : 'Login';
   loginBtn.innerText = isSignup ? 'Create Account' : 'Login';
   toggleLink.innerText = isSignup ? 'Already have an account? Login' : "Don't have an account? Sign up";
   loginError.innerText = '';
+  loginError.style.color = 'red';
 }
 
-// ---------- Login / Signup ----------
-loginBtn.addEventListener('click', async () => {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value.trim();
-  loginError.innerText = '';
+// -------------------- Login / Signup --------------------
+if (loginBtn) {
+  loginBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
 
-  if (!username || !password) {
-    loginError.innerText = 'Please enter username and password';
-    return;
-  }
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    loginError.innerText = '';
 
-  const endpoint = isSignup ? '/signup' : '/login';
-  try {
-    const res = await fetch(`${API_URL}${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
+    if (!username || !password) {
+      loginError.innerText = 'Please enter username and password';
+      return;
+    }
 
-    const data = await res.json();
+    const endpoint = isSignup ? '/signup' : '/login';
+    try {
+      const res = await fetch(`${API_URL}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
 
-    if (res.ok) {
-      if (isSignup) {
-        // After signup success → switch to login
-        loginError.style.color = 'green';
-        loginError.innerText = 'Signup successful! Please login now.';
-        isSignup = false;
-        updateFormMode();
-      } else {
-        // Login success → show dashboard
-        loginCard.style.display = 'none';
-        dashboard.style.display = 'block';
-        loadCampaigns();
-      }
-    } else {
-      // If login fails and not signed up yet → suggest signup
-      if (!isSignup && data.error && data.error.toLowerCase().includes('not found')) {
-        loginError.innerText = 'Account not found. Please sign up first.';
-        isSignup = true;
-        updateFormMode();
+      const data = await res.json();
+
+      if (res.ok) {
+        if (isSignup) {
+          loginError.style.color = 'green';
+          loginError.innerText = 'Signup successful! Please login now.';
+          isSignup = false;
+          updateFormMode();
+        } else {
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('username', username);
+          if (dashboard) {
+            loginCard.style.display = 'none';
+            dashboard.style.display = 'block';
+            loadCampaigns();
+          } else {
+            window.location.href = 'dashboard.html';
+          }
+        }
       } else {
         loginError.innerText = data.error || 'Something went wrong.';
       }
+    } catch (err) {
+      console.error(err);
+      loginError.innerText = 'Server error. Please try again later.';
     }
-  } catch (err) {
-    console.error(err);
-    loginError.innerText = 'Server error. Please try again later.';
-  }
-});
+  });
+}
 
-// ---------- Load Campaigns ----------
-const loadCampaigns = async () => {
+// -------------------- Load Campaigns --------------------
+async function loadCampaigns() {
   try {
     const res = await fetch(`${API_URL}/campaigns`);
     campaigns = await res.json();
@@ -87,11 +92,12 @@ const loadCampaigns = async () => {
   } catch (err) {
     console.error('Failed to load campaigns:', err);
   }
-};
+}
 
-// ---------- Display Campaigns ----------
-const displayCampaigns = () => {
-  const search = searchInput.value.toLowerCase();
+// -------------------- Display Campaigns --------------------
+function displayCampaigns() {
+  if (!tableBody) return;
+  const search = searchInput ? searchInput.value.toLowerCase() : '';
   tableBody.innerHTML = '';
 
   campaigns
@@ -113,56 +119,100 @@ const displayCampaigns = () => {
       `;
       tableBody.appendChild(card);
     });
-};
+}
 
-// ---------- Add Campaign ----------
-addBtn.addEventListener('click', async () => {
-  const newCampaign = {
-    name: document.getElementById('name').value.trim(),
-    client: document.getElementById('client').value.trim(),
-    startDate: document.getElementById('start-date').value,
-    status: document.getElementById('status').value
-  };
+// -------------------- Add Campaign --------------------
+if (addBtn) {
+  addBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
 
-  if (!newCampaign.name || !newCampaign.client || !newCampaign.startDate) {
-    alert('Please fill in all fields before adding.');
-    return;
-  }
+    const newCampaign = {
+      name: document.getElementById('name').value.trim(),
+      client: document.getElementById('client').value.trim(),
+      startDate: document.getElementById('start-date').value,
+      status: document.getElementById('status').value
+    };
 
-  await fetch(`${API_URL}/campaigns`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newCampaign)
+    if (!newCampaign.name || !newCampaign.client || !newCampaign.startDate) {
+      alert('Please fill in all fields before adding.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/campaigns`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCampaign)
+      });
+
+      if (!res.ok) throw new Error('Failed to add campaign');
+
+      // Clear inputs
+      document.getElementById('name').value = '';
+      document.getElementById('client').value = '';
+      document.getElementById('start-date').value = '';
+      document.getElementById('status').value = 'Pending';
+
+      loadCampaigns();
+    } catch (err) {
+      console.error('Failed to add campaign:', err);
+      alert('Error adding campaign. Check console.');
+    }
   });
+}
 
-  document.getElementById('name').value = '';
-  document.getElementById('client').value = '';
-  document.getElementById('start-date').value = '';
-  loadCampaigns();
-});
-
-// ---------- Update / Delete ----------
+// -------------------- Update / Delete --------------------
 async function updateStatus(id, status) {
-  await fetch(`${API_URL}/campaigns/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status })
-  });
-  loadCampaigns();
+  try {
+    await fetch(`${API_URL}/campaigns/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    loadCampaigns();
+  } catch (err) {
+    console.error('Failed to update status:', err);
+  }
 }
 
 async function deleteCampaign(id) {
-  await fetch(`${API_URL}/campaigns/${id}`, { method: 'DELETE' });
-  loadCampaigns();
+  try {
+    await fetch(`${API_URL}/campaigns/${id}`, { method: 'DELETE' });
+    loadCampaigns();
+  } catch (err) {
+    console.error('Failed to delete campaign:', err);
+  }
 }
 
-// ---------- Search ----------
-searchInput.addEventListener('input', displayCampaigns);
+// -------------------- Search --------------------
+if (searchInput) {
+  searchInput.addEventListener('input', displayCampaigns);
+}
 
-// ---------- Dashboard Summary ----------
+// -------------------- Dashboard Summary --------------------
 function updateSummary() {
+  if (!campaigns) return;
   document.getElementById('total-count').innerText = campaigns.length;
   document.getElementById('active-count').innerText = campaigns.filter(c => c.status === 'Active').length;
   document.getElementById('pending-count').innerText = campaigns.filter(c => c.status === 'Pending').length;
   document.getElementById('completed-count').innerText = campaigns.filter(c => c.status === 'Completed').length;
 }
+
+// -------------------- Logout --------------------
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('username');
+    window.location.href = 'index.html';
+  });
+}
+
+// -------------------- Auto-show dashboard if logged in --------------------
+window.addEventListener('load', () => {
+  if (localStorage.getItem('loggedIn') && dashboard) {
+    loginCard.style.display = 'none';
+    dashboard.style.display = 'block';
+    loadCampaigns();
+  }
+});

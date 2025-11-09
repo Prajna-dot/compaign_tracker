@@ -1,83 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Campaign Tracker</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Campaign Tracker</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Login / Signup -->
-  <div class="login-card" id="login-card">
-    <h2 id="form-title">Login</h2>
-    <p id="login-msg">Enter your credentials to continue</p>
-    
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    
-    <button class="btn-add" id="login-btn">Login</button>
-    <p class="login-error" id="login-error"></p>
-    
-    <p id="toggle-text">Don't have an account? <span id="toggle-link">Sign up</span></p>
-  </div>
+<div class="login-card" id="login-card">
+  <h2 id="form-title">Login</h2>
+  <p>Enter your credentials to continue</p>
+  
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  
+  <button class="btn-add" id="login-btn">Login</button>
+  <p class="login-error" id="login-error"></p>
+  
+  <p id="toggle-text">Don't have an account? <span id="toggle-link">Sign up</span></p>
+</div>
 
-  <!-- Dashboard -->
-  <div class="dashboard-container" id="dashboard" style="display:none;">
-    
-    <!-- Header -->
-    <div class="dashboard-header">
-      <h1>Campaign Tracker Dashboard</h1>
-      <p>Manage your campaigns efficiently</p>
-    
-
-    </div>
-
-    <!-- Summary Cards -->
-    <div class="summary-cards">
-      <div class="summary-card">
-        <h3>Total Campaigns</h3>
-        <p id="total-count">0</p>
-      </div>
-      <div class="summary-card">
-        <h3>Active</h3>
-        <p id="active-count">0</p>
-      </div>
-      <div class="summary-card">
-        <h3>Pending</h3>
-        <p id="pending-count">0</p>
-      </div>
-      <div class="summary-card">
-        <h3>Completed</h3>
-        <p id="completed-count">0</p>
-      </div>
-    </div>
-
-    <!-- Add Campaign Form -->
-    <div class="card form-card">
-      <h2>Add New Campaign</h2>
-      <div class="input-group">
-        <input type="text" id="name" placeholder="Campaign Name">
-        <input type="text" id="client" placeholder="Client Name">
-        <input type="date" id="start-date">
-        <select id="status">
-          <option value="Pending">Pending</option>
-          <option value="Active">Active</option>
-          <option value="Completed">Completed</option>
-        </select>
-        <button class="btn-add" id="add-btn">Add Campaign</button>
-      </div>
-    </div>
-
-    <!-- Search / Filter -->
-    <div class="card search-card">
-      <input type="text" id="search-input" placeholder="Search campaigns by name or client...">
-    </div>
-
-    <!-- Campaign List -->
-    <div class="campaign-cards" id="campaigns-table"></div>
-  </div>
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

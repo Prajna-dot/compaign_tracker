@@ -1,41 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
-    h1 { color: #333; }
-    #logoutBtn {
-      background-color: #ff4b5c;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      border-radius: 5px;
-      font-size: 16px;
-      margin-top: 20px;
-    }
-    #logoutBtn:hover { background-color: #e8434f; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Campaign Tracker</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Welcome to Dashboard</h1>
-  <p>You are logged in!</p>
 
+<div class="dashboard-container" id="dashboard">
 
-  <script>
-  // Check if user is logged in
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>Campaign Tracker Dashboard</h1>
+    <p>Manage your campaigns efficiently</p>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <h3>Total Campaigns</h3>
+      <p id="total-count">0</p>
+    </div>
+    <div class="summary-card">
+      <h3>Active</h3>
+      <p id="active-count">0</p>
+    </div>
+    <div class="summary-card">
+      <h3>Pending</h3>
+      <p id="pending-count">0</p>
+    </div>
+    <div class="summary-card">
+      <h3>Completed</h3>
+      <p id="completed-count">0</p>
+    </div>
+  </div>
+
+  <!-- Add Campaign Form -->
+  <div class="card form-card">
+    <h2>Add New Campaign</h2>
+    <div class="input-group">
+      <input type="text" id="name" placeholder="Campaign Name">
+      <input type="text" id="client" placeholder="Client Name">
+      <input type="date" id="start-date">
+      <select id="status">
+        <option value="Pending">Pending</option>
+        <option value="Active">Active</option>
+        <option value="Completed">Completed</option>
+      </select>
+      <button class="btn-add" id="add-btn">Add Campaign</button>
+    </div>
+  </div>
+
+  <!-- Search / Filter -->
+  <div class="card search-card">
+    <input type="text" id="search-input" placeholder="Search campaigns by name or client...">
+  </div>
+
+  <!-- Campaign List -->
+  <div class="campaign-cards" id="campaigns-table"></div>
+
+  <!-- Logout Button -->
+  <div class="logout-container">
+    <button id="logoutBtn">Logout</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Redirect to login if not logged in
   if (!localStorage.getItem('loggedIn')) {
-    // If not logged in, redirect to login
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
   }
 
-  // Logout button click event
-  document.getElementById('logoutBtn').addEventListener('click', function() {
-    localStorage.removeItem('loggedIn'); // Remove login flag
-    window.location.href = 'login.html'; // Redirect to login page
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('loggedIn');
+    window.location.href = 'index.html';
   });
 </script>
 </body>
