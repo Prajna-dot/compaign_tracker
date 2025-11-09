@@ -4,7 +4,11 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+
+// Use Render's dynamic port or default to 3000 for local testing
+const PORT = process.env.PORT || 3000;
+
+// File paths for storing data
 const DATA_FILE = path.join(__dirname, 'campaigns.json');
 const USERS_FILE = path.join(__dirname, 'users.json');
 
@@ -133,7 +137,12 @@ app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/dashboard.html'));
 });
 
+// Fallback for all other routes (important for Render hosting)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
 // -------------------- Start Server --------------------
-app.listen(PORT, () =>
-  console.log(`🚀 Server running at http://localhost:${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
