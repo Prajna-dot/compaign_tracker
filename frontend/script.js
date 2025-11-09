@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:3000';
+// ✅ Use your Render backend instead of localhost
+const API_URL = 'https://compaign-tracker.onrender.com';
 
 // -------------------- DOM Elements --------------------
 const loginCard = document.getElementById('login-card');
@@ -36,12 +37,12 @@ if (loginBtn) {
   loginBtn.addEventListener('click', async (e) => {
     e.preventDefault();
 
-    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('username').value.trim(); // changed to email
     const password = document.getElementById('password').value.trim();
     loginError.innerText = '';
 
-    if (!username || !password) {
-      loginError.innerText = 'Please enter username and password';
+    if (!email || !password) {
+      loginError.innerText = 'Please enter email and password';
       return;
     }
 
@@ -50,7 +51,7 @@ if (loginBtn) {
       const res = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ email, password }) // ✅ send email instead of username
       });
 
       const data = await res.json();
@@ -63,7 +64,7 @@ if (loginBtn) {
           updateFormMode();
         } else {
           localStorage.setItem('loggedIn', 'true');
-          localStorage.setItem('username', username);
+          localStorage.setItem('email', email);
           if (dashboard) {
             loginCard.style.display = 'none';
             dashboard.style.display = 'block';
@@ -147,7 +148,6 @@ if (addBtn) {
 
       if (!res.ok) throw new Error('Failed to add campaign');
 
-      // Clear inputs
       document.getElementById('name').value = '';
       document.getElementById('client').value = '';
       document.getElementById('start-date').value = '';
@@ -203,7 +203,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {
   logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('loggedIn');
-    localStorage.removeItem('username');
+    localStorage.removeItem('email');
     window.location.href = 'index.html';
   });
 }
