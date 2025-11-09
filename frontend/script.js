@@ -1,5 +1,5 @@
 // ✅ Use your Render backend instead of localhost
-const API_URL = 'https://compaign-tracker.onrender.com';
+const API_URL = 'http://compaign-tracker.onrender.com';
 
 // -------------------- DOM Elements --------------------
 const loginCard = document.getElementById('login-card');
