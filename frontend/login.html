@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Campaign Tracker</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-card {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        width: 350px;
+        text-align: center;
+    }
+
+    .login-card h2 { margin-bottom: 20px; color: #3498db; }
+    .login-card input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+    }
+    .login-card button {
+        width: 100%;
+        padding: 12px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+    .login-card button:hover { background: #2980b9; }
+
+    .error-msg {
+        color: red;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+</style>
+</head>
+<body>
+
+<div class="login-card">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p class="error-msg" id="error-msg"></p>
+</div>
+
+<script>
+// ✅ Updated to use your live Render backend
+const API_URL = 'https://compaign-tracker.onrender.com';
+
+async function login() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const errorMsg = document.getElementById('error-msg');
+
+    errorMsg.innerText = '';
+
+    if (!username || !password) {
+        errorMsg.innerText = 'Please enter username and password.';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            localStorage.setItem('loggedIn', 'true');
+            localStorage.setItem('username', username);
+            window.location.href = 'dashboard.html';
+        } else {
+            errorMsg.innerText = data.error || 'Login failed. Try again.';
+        }
+    } catch (err) {
+        console.error(err);
+        errorMsg.innerText = 'Server error. Please try again later.';
+    }
+}
+</script>
+
+</body>
+</html>
